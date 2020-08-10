@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, findByText } from '@testing-library/react';
 import App from './App';
 import {fetchShow as mockFetchShow} from './api/fetchShow';
 
@@ -47,13 +47,14 @@ const data = {
 
     test("Data is being fetched and rendering correctly", async () => {
         // mock the resolved value of fetchMissions
-        mockFetchShow.mockResolvedValueOnce(data);
+        mockFetchShow.mockResolvedValueOnce({data: data});
 
-        const {findByAltText} = render (<App />);
+        const {getAllByText} = render (<App />);
 
         await waitFor(() => {
+            const title = getAllByText(/stranger things/i);
           // make your assertion that will run _after_ the async operation finishes
-          expect(findByAltText(/stranger things/i)).toBeInTheDocument();
+          expect(title[0]).toBeInTheDocument();
         });
         
         expect(mockFetchShow).toHaveBeenCalledTimes(1);
